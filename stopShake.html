@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+    
+<body>
+    <script>
+        //这是一个防抖函数 emmmm
+        function debounce(func,time,immediate){
+            var timer,result;
+            return function(){
+                var that=this;
+                var args=arguments;
+                //如果timer存在就清除 以便我们立即执行
+                if(timer){clearTimeout(timer)};
+                if(immediate){
+                    var callNow=!timer;
+                    //修改timer的值
+                    timer=setTimeout(function(){
+                        timer=null;
+                    },time)
+                    //如果callNow为真就执行
+                    if(callNow){
+                        result = func.apply(that,args);
+                    }
+                }else{
+                    timer=setTimeout(()=>{
+                        console.log(2);
+                        func.apply(that.args)
+                    },time);
+                }
+                return result;
+            }
+        }
+    </script>
+</body>
+
+</html>

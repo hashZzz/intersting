@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function unique(arr){
+            var obj={};
+            return arr.filter(function(item){
+                return obj.hasOwnProperty(typeof item +item)?
+                false:(obj[typeof item+item]=true);
+            })
+        }
+        //ES5
+        // [1,2,3,4,5,"a","a",1,5,4,3].filter(function(ele,index,array){
+        //     return index===array.indexOf(ele);
+        // })
+    </script>
+</body>
+</html>

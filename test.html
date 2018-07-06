@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var arr = ["1","2","3","4",1,2,3,4,5,1,2,3,4,5,"1","2","5","6",64,"5","2"];
+        var arr2 = [1,2,3,4,5,6,6,7,1,23,5]
+        function text(arr){
+            var obj = {};
+            var newArr=arr.filter((item)=>{
+                return obj[typeof item +item] == true ? false : (obj[typeof item + item] = true);
+            })
+            return newArr;
+        }  
+        console.log(text(arr));
+    </script>
+</body>
+</html>

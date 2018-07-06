@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 判断某年是否是润年
+         * https://github.com/sindresorhus/leap-year/blob/master/index.js
+         *
+         * @param year
+         * @return {boolean}
+         */
+        const isLeapYear = function (year) {
+            year = year || new Date();
+
+            if (!(year instanceof Date) && typeof year !== 'number') {
+                throw new TypeError(
+                    `Expected \`year\` to be of type \`Date\` or \`number\`, got \`${typeof year}\``);
+            }
+
+            year = year instanceof Date ? year.getFullYear() : year;
+            return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+        };
+
+        /**
+         * 获取某年中有多少天
+         * https://github.com/sindresorhus/year-days/blob/master/index.js
+         *
+         * @param year
+         * @return {number}
+         */
+        const getDaysInYear = function (year) {
+            return isLeapYear(year) ? 366 : 365;
+        };
+
+        /**
+         * 获取某月有多少天
+         * @param {number} month 从0开始
+         * @return {number} 28/29/30/31
+         */
+        const getDaysInMonth = function (month, year) {
+            const now = new Date();
+
+            month = month || now.getUTCMonth();
+            year = year || now.getUTCFullYear();
+
+            return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+        };
+        //---------------------
+        /**
+         * 获取某天开始的时间戳
+         * @param year
+         * @param month
+         * @param day
+         * @returns {number}
+         */
+        const startOfDay = function (year, month, day) {
+            return new Date(`${year}/${month}/${day}`).setHours(0, 0, 0, 0);
+        };
+
+        /**
+         * 获取某天结束的时间戳
+         * @param year
+         * @param month
+         * @param day
+         * @returns {number}
+         */
+        const endOfDay = function (year, month, day) {
+            return new Date(`${year}/${month}/${day}`).setHours(23, 59, 59, 999);
+        };
+
+        /**
+         * 获取某小时开始时间戳
+         * @param year
+         * @param month
+         * @param day
+         * @param hour
+         * @returns {number}
+         */
+        const startOfHour = function (year, month, day, hour) {
+            return new Date(`${year}/${month}/${day} ${hour}:0:0:0`).getTime();
+        };
+
+        /**
+         * 获取某小时结束时间戳
+         * @param year
+         * @param month
+         * @param day
+         * @param hour
+         * @returns {number}
+         */
+        const endOfHour = function (year, month, day, hour) {
+            return new Date(`${year}/${month}/${day} ${hour}:59:59:999`).getTime();
+        };
+
+        /**
+         * 获取某分钟开始时间戳
+         * @param year
+         * @param month
+         * @param day
+         * @param hour
+         * @param minute
+         * @returns {number}
+         */
+        const startOfMinute = function (year, month, day, hour, minute) {
+            return new Date(`${year}/${month}/${day} ${hour}:${minute}:0:0`).getTime();
+        };
+
+        /**
+         * 获取某分钟结束时间戳
+         * @param year
+         * @param month
+         * @param day
+         * @param hour
+         * @param minute
+         * @returns {number}
+         */
+        const endOfMinute = function (year, month, day, hour, minute) {
+            return new Date(`${year}/${month}/${day} ${hour}:${minute}:59:999`).getTime();
+        };
+
+
+        //----------------------------------------------------------------获取相对时间
+        const timesToNow = function (date) {
+            if (!(date instanceof Date) && typeof date !== 'number') {
+                throw new TypeError(
+                    `Expected \`date\` to be of type \`Date\` or \`number\`, got \`${typeof date}\``);
+            }
+
+            let boundaryTimesList = buildBoundaryTimesBaseOnNow();
+
+            let dateTimestamp = date instanceof Date ? date.getTime() : new Date(date).getTime();
+
+            for (let i = 0; i < boundaryTimesList.length; i++) {
+                let temp = boundaryTimesList[i];
+
+                if (dateTimestamp >= temp.start && dateTimestamp < temp.end) {
+                    if (temp.desc === 'justNow') {
+                        return temp.format;
+                    }
+
+                    if (temp.desc === 'inOneHour') {
+                        return temp.format.replace('x', new Date().getMinutes() - new Date(dateTimestamp).getMinutes());
+                    }
+
+                    return formatTime(temp.format, new Date(dateTimestamp), true);
+                }
+            }
+
+            function buildBoundaryTimesBaseOnNow() {
+                const now = Date.now();
+                const nowDate = new Date(now);
+                const year = nowDate.getFullYear();
+                const month = nowDate.getMonth() + 1;
+                const day = nowDate.getDate();
+                const hour = nowDate.getHours();
+                const minute = nowDate.getMinutes();
+
+                return [{
+                        desc: 'justNow',
+                        start: startOfMinute(year, month, day, hour, minute),
+                        end: endOfMinute(year, month, day, hour, minute),
+                        format: '刚刚'
+                    },
+                    {
+                        desc: 'inOneHour',
+                        start: startOfHour(year, month, day, hour),
+                        end: endOfHour(year, month, day, hour),
+                        format: 'x分钟前'
+                    },
+                    {
+                        desc: 'today',
+                        start: startOfDay(year, month, day),
+                        end: endOfDay(year, month, day),
+                        format: '今天 HH:mm'
+                    },
+                    {
+                        desc: 'yestoday',
+                        start: startOfDay(year, month, day - 1),
+                        end: endOfDay(year, month, day - 1),
+                        format: '昨天 HH:mm'
+                    },
+                    {
+                        desc: 'beforeYestoday',
+                        start: startOfDay(year, month, day - 2),
+                        end: endOfDay(year, month, day - 2),
+                        format: '前天 HH:mm'
+                    },
+                    {
+                        desc: 'curYear',
+                        start: startOfDay(year, 1, 1),
+                        end: endOfDay(year, 12, 31),
+                        format: 'MM月DD日 HH:mm'
+                    },
+                    {
+                        desc: 'anotherYear',
+                        start: startOfDay(1990, 1, 1),
+                        end: endOfDay(year - 1, 12, 31),
+                        format: 'YYYY年MM月DD日 HH:mm'
+                    }
+                ];
+            }
+
+        };
+        console.log(timesToNow(+new Date()-4000000));
+    </script>
+</body>
+
+</html>

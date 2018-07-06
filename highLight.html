@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .keyword-match{
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+    
+    <script>
+        function hightlightKeyword(html, keyword) {
+            // 复制一个节点去进行遍历操作
+            let wrap = document.createElement('div');
+
+            wrap.innerHTML = html;
+
+            return DFSTraverseAndHightlight(wrap);
+
+            function DFSTraverseAndHightlight (node) {
+                const rootNodes = node.childNodes;
+                const childNodes = Array.from(rootNodes);
+
+                for(let i = 0, len = childNodes.length; i < len; i++) {
+                    const node = childNodes[i];
+
+                    // 文本节点，要进行高亮
+                    if (node.nodeType === 3) {
+                        let span = document.createElement('span');
+                        let a = span.innerHTML = node.nodeValue.replace(new RegExp(`(${keyword})`, 'g'), `<span class="keyword-match">$1</span>`);
+                        console.log(node.nodeValue);
+                        node.parentNode.insertBefore(span, node);
+                        node.parentNode.removeChild(node);
+                    }
+
+                //文本节点不会有childNodes属性，如果有子节点，继续遍历
+                if (node.childNodes.length) {
+                    DFSTraverseAndHightlight(node);
+                }
+            }
+
+            return node.innerHTML;
+            }
+        }
+    </script>
+</body>
+</html>

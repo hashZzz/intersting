@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="txt">
+    <script>
+        function throttle(func, time) {
+            var timer, context, args, result;
+            var previous = 0;
+            var later = function () {
+                previous = +new Date();
+                timer = null;
+                func.apply(context, args);
+            }
+            var throttled=function(){
+                var now = +new Date();
+                var remaining = time-(now-previous);
+                context=this;
+                args=arguments;
+                if(remaining<=0||remaining>time){
+                    if(timer){
+                        clearTimeout(timer);
+                        timer=null;
+                    }
+                    previous=now;
+                    func.apply(context,args);
+                }else{
+                    timer=setTimeout(later,remaining);
+                }
+            }
+            return throttled;
+        }
+    </script>
+</body>
+
+</html>

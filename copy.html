@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var deepCopy=function(obj){
+            //判断这个对象是不是一个object对象
+            if(typeof obj !== "object") return;
+            //创建一个新的对象 根据obj的类型
+            var newObj=obj instanceof Array?[]:{};
+            //遍历obj
+            for(var key in obj){
+                if(obj.hasOwnProperty(key)){
+                    newObj[key] = typeof obj[key]==="object"?deepCopy(obj[key]):obj[key];
+                }
+            }
+            return newObj;
+        }
+        console.log(deepCopy({name:"jack"}));
+    </script>
+</body>
+</html>

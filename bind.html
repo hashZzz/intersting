@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        Function.prototype.bind=function(){
+            var fn=this;
+            var args=Array.prototype.slice(arguments);
+            var arr=args.shift();
+            return function(){
+                //通过concat加入传进来的参数
+                //可以通过arguments相加
+                return fn.apply(this,args.concat(Array.prototype.slice.call(arguments)));
+            }
+        }
+    </script>
+</body>
+
+</html>

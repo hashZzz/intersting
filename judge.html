@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function type(obj){
+            var classType={};
+            "Boolean Number String Function Array Date RegExp Object Error".split(" ").map((item,index)=>{
+                classType["[object "+item+"]"]=item.toLowerCase();
+            });
+            if(obj==null){
+                return obj+"";
+            };
+            return typeof obj==="object"|| typeof obj ==="function"?
+            classType[Object.prototype.toString.call(obj)]||"object":typeof obj
+        }
+        console.log(type(new Date));
+    </script>
+</body>
+</html>
