@@ -85,3 +85,7 @@
 1. 调用全局的afterEach钩子
 1. 触发DOM更新
 1. 用创建好的实例调用beforeRouterEnter守卫传给next的回调函数
+
+
+
+[拦截器](https://www.cnblogs.com/guoxianglei/p/7084506.html)
