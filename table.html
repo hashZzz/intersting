@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        
+        if (!Function.prototype.bind) {
+      Function.prototype.bind = function () {
+        if (typeof this !== 'function') {　　　　　　
+          throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');　　　　
+        }
+        var _this = this;
+        var obj = arguments[0];
+        var ags = Array.prototype.slice.call(arguments, 1);
+        return function () {
+          _this.apply(obj, ags);
+        };
+      };
+    }
+
+    function TodoList(box) {
+      this.box = $(box);
+      this.init();
+    }
+    $.extend(TodoList.prototype, {
+      init: function () {
+        this.box.on("click", this.add.bind(this))
+        this.box.on("click", this.deleteAction.bind(this));
+        this.box.on("dblclick",this.modify.bind(this));
+        this.box.on('focusout',this.storeVal.bind(this));
+      },
+      //新增
+      add: function (e) {
+        var e = e || event;
+        var target = e.target || e.srcElement;
+        target = $(target);
+        var appEle = $(
+          '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><button class="btn btn-success">增加</button><button class="btn btn-danger">删除</button></td></tr>'
+        );
+        if (target.is(".btn-success")) {
+          target.parent().parent().after(appEle);
+        }
+      },
+      //删
+      deleteAction: function (e) {
+        var e = e || event;
+        var target = e.target || e.srcElement;
+        target = $(target);
+        target.is(".btn-danger") 
+        ?
+          target.parent().parent().remove() 
+        :
+          ""
+      },
+      modify: function (e) {
+        var e = e||event;
+        var target = e.target || e.srcElement;
+        console.log(this);
+        target = $(target);
+        if(target.is("td")&&!target.children().is("button")&&!target.children().is('input')){
+          var ele = $("<td><input type='text' value='' /></td>");
+          ele.find("input").width(target.width()).height(target.height()).val(target.text());
+          ele.replaceAll(target);
+        }
+      },
+      storeVal:function(e){
+        var e = e || event;
+        var target = e.target || e.srcElement;
+        target = $(target);
+        var val = target.val();
+        target.parent().html(val);
+      }
+    })
+    new TodoList("table");    
+    </script>
+</body>
+</html>
